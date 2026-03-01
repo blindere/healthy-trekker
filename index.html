@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Мой дневник питания | Дашборд</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-color: #f4f7f6;
+        --card-bg: #ffffff;
+        --text-main: #1d1d1f;
+        --text-muted: #86868b;
+        --accent-blue: #007aff;
+        --accent-green: #34c759;
+        --accent-orange: #ff9500;
+        --accent-purple: #af52de;
+        --border-color: #e5e5ea;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        padding: 20px;
+        line-height: 1.5;
+      }
+      .container {
+        max-width: 950px;
+        margin: 0 auto;
+      }
+
+      /* Navigation Header */
+      header {
+        text-align: center;
+        margin-bottom: 30px;
+        margin-top: 10px;
+      }
+      header h1 {
+        font-size: 28px;
+        font-weight: 800;
+        margin-bottom: 15px;
+      }
+      .nav-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+      }
+      .nav-btn {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        cursor: pointer;
+        color: var(--text-main);
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+      }
+      .nav-btn:hover:not(:disabled) {
+        background: #f0f0f5;
+      }
+      .nav-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+      #week-title {
+        font-size: 18px;
+        font-weight: 600;
+        min-width: 250px;
+        color: var(--accent-blue);
+      }
+
+      /* Summary Cards */
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+      .card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        position: relative;
+      }
+      .card h3 {
+        font-size: 13px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+      }
+      .card .value {
+        font-size: 32px;
+        font-weight: 800;
+      }
+      .card .unit {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-muted);
+      }
+      .val-orange {
+        color: var(--accent-orange);
+      }
+      .val-blue {
+        color: var(--accent-blue);
+      }
+      .val-green {
+        color: var(--accent-green);
+      }
+      .val-purple {
+        color: var(--accent-purple);
+      }
+      .badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: #e3f8e9;
+        color: var(--accent-green);
+        padding: 4px 8px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      /* Layout Grid for Desktop */
+      .content-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      .section-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 25px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        overflow-x: auto;
+      }
+      .section-card h2 {
+        font-size: 20px;
+        margin-bottom: 20px;
+        border-bottom: 2px solid var(--bg-color);
+        padding-bottom: 10px;
+      }
+
+      /* Accordion for Meals */
+      details {
+        margin-bottom: 10px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      summary {
+        padding: 15px;
+        font-weight: 600;
+        background: #fafafa;
+        cursor: pointer;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 15px;
+      }
+      summary::-webkit-details-marker {
+        display: none;
+      }
+      summary::after {
+        content: "+";
+        font-size: 20px;
+        color: var(--accent-blue);
+        transition: 0.3s;
+      }
+      details[open] summary::after {
+        content: "−";
+      }
+      .meal-content {
+        padding: 15px;
+        font-size: 14px;
+        color: #444;
+        border-top: 1px solid var(--border-color);
+        background: #fff;
+      }
+      .meal-item {
+        margin-bottom: 12px;
+      }
+      .meal-item strong {
+        color: var(--text-main);
+        display: block;
+        margin-bottom: 2px;
+      }
+      .meal-macros {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 4px;
+        display: inline-block;
+        background: var(--bg-color);
+        padding: 2px 6px;
+        border-radius: 4px;
+      }
+
+      /* Stats Table */
+      .nutrition-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 600px;
+      }
+      .nutrition-table th,
+      .nutrition-table td {
+        text-align: left;
+        padding: 12px 10px;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 14px;
+      }
+      .nutrition-table th {
+        color: var(--text-muted);
+        font-weight: 600;
+      }
+      .nutrition-table td strong {
+        font-weight: 600;
+        color: var(--text-main);
+      }
+      .td-weight {
+        color: var(--accent-purple);
+        font-weight: 800;
+      }
+      .td-burned {
+        color: var(--accent-green);
+        font-weight: 600;
+      }
+      .td-cal {
+        color: var(--accent-orange);
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Дневник Питания</h1>
+        <div class="nav-controls">
+          <button class="nav-btn" id="btn-prev" onclick="changeWeek(-1)">
+            &#8592;
+          </button>
+          <div id="week-title">Загрузка...</div>
+          <button class="nav-btn" id="btn-next" onclick="changeWeek(1)">
+            &#8594;
+          </button>
+        </div>
+      </header>
+
+      <div class="summary-grid">
+        <div class="card">
+          <h3>Текущий вес</h3>
+          <div class="value val-purple" id="val-weight">
+            0 <span class="unit">кг</span>
+          </div>
+          <div class="badge" id="val-weight-diff">-0 кг</div>
+        </div>
+        <div class="card">
+          <h3>Ср. сожжено (Актив.)</h3>
+          <div class="value val-green" id="val-burned">
+            0 <span class="unit">ккал</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Ср. съедено</h3>
+          <div class="value val-orange" id="val-cal">
+            0 <span class="unit">ккал</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Средний белок</h3>
+          <div class="value val-blue" id="val-pro">
+            0 <span class="unit">г</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-grid">
+        <div class="section-card">
+          <h2>Сводка за неделю</h2>
+          <table class="nutrition-table">
+            <thead>
+              <tr>
+                <th>День</th>
+                <th>Вес</th>
+                <th>Съедено</th>
+                <th>Сожжено</th>
+                <th>Белки</th>
+                <th>Жиры</th>
+                <th>Углеводы</th>
+              </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+          </table>
+        </div>
+
+        <div class="section-card">
+          <h2>Детализация меню</h2>
+          <div id="meals-container"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // === НАША БАЗА ДАННЫХ ПО НЕДЕЛЯМ ===
+      const db = [
+        {
+          weekId: 1,
+          title: "Неделя 1 (Февраль - Март)",
+          stats: {
+            avgCal: 1535,
+            avgPro: 71,
+            avgBurned: 767,
+            currentWeight: 99.9,
+            weightDiff: "-2.48", // 102.38 - 99.9
+          },
+          days: [
+            {
+              id: "Понедельник",
+              cal: 1766,
+              burned: null,
+              weight: 102.38,
+              pro: 68,
+              fat: 70,
+              carb: 220,
+              meals:
+                "<div class='meal-item'>Детальный лог не велся, калибровка БЖУ.</div>",
+            },
+            {
+              id: "Вторник",
+              cal: 1962,
+              burned: null,
+              weight: null,
+              pro: 72,
+              fat: 78,
+              carb: 250,
+              meals:
+                "<div class='meal-item'>Детальный лог не велся, калибровка БЖУ.</div>",
+            },
+            {
+              id: "Среда",
+              cal: 1599,
+              burned: 723,
+              weight: 100.6,
+              pro: 57,
+              fat: 81,
+              carb: 175,
+              meals:
+                "<div class='meal-item'><strong>Обед:</strong> Машевая каша, тушеная фасоль с перцем, грецкие орехи, соленый огурец.<span class='meal-macros'>508 ккал | Б: 25г</span></div><div class='meal-item'><strong>Ужин:</strong> Борщ постный, салат (капуста, горох, укроп, масло), миндаль, тыквенные семечки.<span class='meal-macros'>635 ккал | Б: 22г</span></div>",
+            },
+            {
+              id: "Четверг",
+              cal: 1746,
+              burned: 474,
+              weight: null,
+              pro: 72,
+              fat: 74,
+              carb: 202,
+              meals:
+                "<div class='meal-item'><strong>Завтрак:</strong> Рис с перцем, салат тунец с овощами, нут, помидоры, хлебец с хумусом.<span class='meal-macros'>405 ккал | Б: 16г</span></div><div class='meal-item'><strong>Обед:</strong> Борщ постный, салат из буряка, селедка.<span class='meal-macros'>325 ккал | Б: 13г</span></div><div class='meal-item'><strong>Ужин:</strong> Машевая каша, фасоль тушеная, халва, тыквенные семечки.<span class='meal-macros'>1016 ккал | Б: 43г</span></div>",
+            },
+            {
+              id: "Пятница",
+              cal: 1581,
+              burned: 593,
+              weight: 99.9,
+              pro: 77,
+              fat: 65,
+              carb: 163,
+              meals:
+                "<div class='meal-item'><strong>Завтрак:</strong> Овсянка, салат с тунцом, нут, халва (15г).<span class='meal-macros'>402 ккал | Б: 17г</span></div><div class='meal-item'><strong>Обед:</strong> Тушеные грибы с морковью, салат из капусты, шоколад 80%.<span class='meal-macros'>396 ккал | Б: 9г</span></div><div class='meal-item'><strong>Ужин:</strong> Гречка, тунец с фасолью, салат из буряка, томатный сок.<span class='meal-macros'>541 ккал | Б: 25г</span></div><div class='meal-item'><strong>Перекус:</strong> Крабовые палочки, фисташки, креветки, чай.<span class='meal-macros'>242 ккал | Б: 26г</span></div>",
+            },
+            {
+              id: "Суббота",
+              cal: 1837,
+              burned: 1689,
+              weight: null,
+              pro: 86,
+              fat: 84,
+              carb: 189,
+              meals:
+                "<div class='meal-item'><strong>Завтрак:</strong> Гречка, тунец, нут, черри, салат, хлебцы с хумусом.<span class='meal-macros'>520 ккал | Б: 31г</span></div><div class='meal-item'><strong>Перекус (после Баскетбола):</strong> Протеиновый коктейль Herbalife, хлебец с хумусом, крабовые палочки.<span class='meal-macros'>272 ккал | Б: 30г</span></div><div class='meal-item'><strong>Ужин:</strong> Жареная картошка, селедка, квашеная капуста, малосольные помидоры, шоколад 80%, сок, семечки.<span class='meal-macros'>1045 ккал | Б: 25г</span></div>",
+            },
+            {
+              id: "Воскресенье",
+              cal: 1255,
+              burned: 358,
+              weight: null,
+              pro: 67,
+              fat: 46,
+              carb: 143,
+              meals:
+                "<div class='meal-item'><strong>Завтрак:</strong> Шоколад 80%, кофе, гречка, тунец, красная фасоль, хлебцы с хумусом, фисташки.<span class='meal-macros'>560 ккал | Б: 35г</span></div><div class='meal-item'><strong>Обед:</strong> Рис тушеный, красная фасоль, хлебцы с хумусом, яблоко.<span class='meal-macros'>445 ккал | Б: 12г</span></div><div class='meal-item'><strong>Ужин:</strong> Жареная плотва (3 шт), шоколад 80%, чай.<span class='meal-macros'>250 ккал | Б: 20г</span></div>",
+            },
+          ],
+        },
+        {
+          weekId: 2,
+          title: "Неделя 2 (Ожидание данных)",
+          stats: {
+            avgCal: 0,
+            avgPro: 0,
+            avgBurned: 0,
+            currentWeight: 0,
+            weightDiff: "0",
+          },
+          days: [
+            {
+              id: "Понедельник",
+              cal: 0,
+              burned: null,
+              weight: null,
+              pro: 0,
+              fat: 0,
+              carb: 0,
+              meals: "Ждем данные...",
+            },
+            {
+              id: "Вторник",
+              cal: 0,
+              burned: null,
+              weight: null,
+              pro: 0,
+              fat: 0,
+              carb: 0,
+              meals: "Ждем данные...",
+            },
+            {
+              id: "Среда",
+              cal: 0,
+              burned: null,
+              weight: null,
+              pro: 0,
+              fat: 0,
+              carb: 0,
+              meals: "Ждем данные...",
+            },
+            {
+              id: "Четверг",
+              cal: 0,
+              burned: null,
+              weight: null,
+              pro: 0,
+              fat: 0,
+              carb: 0,
+              meals: "Ждем данные...",
+            },
+            {
+              id: "Пятница",
+              cal: 0,
+              burned: null,
+              weight: null,
+              pro: 0,
+              fat: 0,
+              carb: 0,
+              meals: "Ждем данные...",
+            },
+            {
+              id: "Суббота",
+              cal: 0,
+              burned: null,
+              weight: null,
+              pro: 0,
+              fat: 0,
+              carb: 0,
+              meals: "Ждем данные...",
+            },
+            {
+              id: "Воскресенье",
+              cal: 0,
+              burned: null,
+              weight: null,
+              pro: 0,
+              fat: 0,
+              carb: 0,
+              meals: "Ждем данные...",
+            },
+          ],
+        },
+      ];
+
+      let currentWeekIndex = 0;
+
+      function renderWeek(index) {
+        const week = db[index];
+
+        // Обновляем заголовок и карточки
+        document.getElementById("week-title").innerText = week.title;
+        document.getElementById("val-cal").innerText = week.stats.avgCal;
+        document.getElementById("val-pro").innerText = week.stats.avgPro;
+        document.getElementById("val-burned").innerText = week.stats.avgBurned;
+
+        document.getElementById("val-weight").innerText =
+          week.stats.currentWeight > 0 ? week.stats.currentWeight : "-";
+
+        let diffBadge = document.getElementById("val-weight-diff");
+        if (week.stats.weightDiff !== "0") {
+          diffBadge.style.display = "block";
+          diffBadge.innerText = week.stats.weightDiff + " кг";
+        } else {
+          diffBadge.style.display = "none";
+        }
+
+        // Обновляем таблицу и аккордеон еды
+        let tableHTML = "";
+        let mealsHTML = "";
+
+        week.days.forEach((day) => {
+          // Форматируем значения для таблицы (если null, то ставим прочерк)
+          let displayWeight = day.weight
+            ? day.weight + " кг"
+            : "<span style='color:#ccc'>-</span>";
+          let displayBurned = day.burned
+            ? "+" + day.burned + " ккал"
+            : "<span style='color:#ccc'>-</span>";
+          let displayCal =
+            day.cal > 0
+              ? day.cal + " ккал"
+              : "<span style='color:#ccc'>-</span>";
+
+          // Таблица Сводки
+          tableHTML += `<tr>
+                <td><strong>${day.id.substring(0, 2)}</strong></td>
+                <td class="td-weight">${displayWeight}</td>
+                <td class="td-cal">${displayCal}</td>
+                <td class="td-burned">${displayBurned}</td>
+                <td>${day.pro > 0 ? day.pro + " г" : "-"}</td>
+                <td>${day.fat > 0 ? day.fat + " г" : "-"}</td>
+                <td>${day.carb > 0 ? day.carb + " г" : "-"}</td>
+            </tr>`;
+
+          // Аккордеон меню
+          mealsHTML += `
+                <details>
+                    <summary>${day.id} — Съедено: ${day.cal > 0 ? day.cal + " ккал" : "Нет данных"}</summary>
+                    <div class="meal-content">${day.meals}</div>
+                </details>
+            `;
+        });
+
+        document.getElementById("table-body").innerHTML = tableHTML;
+        document.getElementById("meals-container").innerHTML = mealsHTML;
+
+        // Блокировка стрелок
+        document.getElementById("btn-prev").disabled = index === 0;
+        document.getElementById("btn-next").disabled = index === db.length - 1;
+      }
+
+      function changeWeek(direction) {
+        currentWeekIndex += direction;
+        renderWeek(currentWeekIndex);
+      }
+
+      // Инициализация при загрузке
+      renderWeek(currentWeekIndex);
+    </script>
+  </body>
+</html>
