@@ -146,11 +146,11 @@
 <script>
     const BASE_BMR = 1985; 
 
-    // === БАЗА ДАННЫХ ===
+    // === БАЗА ДАННЫХ ПО 3-М НЕДЕЛЯМ ===
     const db = [
         {
             weekId: 1,
-            title: "Неделя 1",
+            title: "Неделя 1 (Февраль - Март)",
             stats: { avgCal: 1535, avgPro: 71, avgBurned: 767, currentWeight: 99.9, weightDiff: "-2.48" },
             days: [
                 { id: "Понедельник", cal: 1766, burned: 0, weight: 102.38, pro: 68, fat: 70, carb: 220, meals: "<div class='meal-item'>Детальный лог не велся, калибровка БЖУ.</div>" },
@@ -167,13 +167,13 @@
             title: "Неделя 2",
             stats: { avgCal: 1464, avgPro: 65, avgBurned: 500, currentWeight: 98.1, weightDiff: "-0.8" },
             days: [
-                { id: "Понедельник", cal: 1190, burned: 400, weight: 98.9, pro: 55, fat: 50, carb: 130, meals: "<div class='meal-item'>Возвращение в ритм после выходных. Детальный лог в свободном формате.</div>" },
-                { id: "Вторник", cal: 1313, burned: 450, weight: null, pro: 60, fat: 55, carb: 145, meals: "<div class='meal-item'>Стабильный дефицит и контроль порций. Детальный лог в свободном формате.</div>" },
-                { id: "Среда", cal: 1406, burned: 500, weight: 98.5, pro: 65, fat: 60, carb: 150, meals: "<div class='meal-item'>Экватор недели, вес продолжает уверенно падать. Детальный лог в свободном формате.</div>" },
-                { id: "Четверг", cal: 1576, burned: 550, weight: null, pro: 70, fat: 65, carb: 175, meals: "<div class='meal-item'>Баланс макронутриентов и хорошая активность. Детальный лог в свободном формате.</div>" },
-                { id: "Пятница", cal: 1576, burned: 600, weight: 98.1, pro: 70, fat: 65, carb: 175, meals: "<div class='meal-item'>Отличный результат на весах к концу рабочей недели. Детальный лог в свободном формате.</div>" },
-                { id: "Суббота", cal: 1869, burned: 650, weight: null, pro: 80, fat: 75, carb: 220, meals: "<div class='meal-item'>Небольшая углеводная загрузка для разгона метаболизма. Детальный лог в свободном формате.</div>" },
-                { id: "Воскресенье", cal: 1110, burned: 350, weight: null, pro: 55, fat: 45, carb: 120, meals: "<div class='meal-item'>Разгрузочный день и отдых. Детальный лог в свободном формате.</div>" }
+                { id: "Понедельник", cal: 1190, burned: 400, weight: 98.9, pro: 55, fat: 50, carb: 130, meals: "<div class='meal-item'><strong>Завтрак:</strong> Рис с перцем и луком, салат из буряка и лука, гороховая каша, кофе, шоколад Рошен 80% (2 куб.).</div><div class='meal-item'><strong>Обед:</strong> Тыквенный крем-суп, красная фасоль, гречневые хлебцы с хумусом (2 шт).</div><div class='meal-item'><strong>Ужин:</strong> Картофельное пюре, тунец, салат из буряка, квашеная капуста.</div>" },
+                { id: "Вторник", cal: 1313, burned: 450, weight: null, pro: 60, fat: 55, carb: 145, meals: "<div class='meal-item'><strong>Завтрак:</strong> Гороховая каша, грибы тушенные с луком, помидоры черри, гречневые хлебцы с хумусом (2 шт), чай, шоколад Рошен 80% (2 куб.).</div><div class='meal-item'><strong>Обед:</strong> Рис с перцем и луком, консервированная красная рыба (лосось).</div><div class='meal-item'><strong>Ужин:</strong> Булгур с грибами и фасолью, овощной салат, фисташки.</div>" },
+                { id: "Среда", cal: 1406, burned: 500, weight: 98.5, pro: 65, fat: 60, carb: 150, meals: "<div class='meal-item'><strong>Завтрак:</strong> Булгур, гороховая каша, салат из буряка с луком, кофе.</div><div class='meal-item'><strong>Обед:</strong> Постные голубцы.</div><div class='meal-item'><strong>Ужин:</strong> Жареная картошка, салат с тунцом, пекинская капуста, помидоры, огурцы.</div>" },
+                { id: "Четверг", cal: 1576, burned: 550, weight: null, pro: 70, fat: 65, carb: 175, meals: "<div class='meal-item'><strong>Завтрак:</strong> Гречневая каша, тунец с фасолью, салат из буряка и лука, апельсин (1/2), кофе, шоколад с миндалем (2 куб.).</div><div class='meal-item'><strong>Обед:</strong> Постные голубцы, отварной нут.</div><div class='meal-item'><strong>Ужин:</strong> Тыквенный крем-суп, отварной нут, тыквенные семечки.</div>" },
+                { id: "Пятница", cal: 1576, burned: 600, weight: 98.1, pro: 70, fat: 65, carb: 175, meals: "<div class='meal-item'><strong>Завтрак:</strong> Гречневая каша, тунец с фасолью, салат (пекинская капуста, огурец, черри, нут, масло), кофе, шоколад с миндалем (3 куб.).</div><div class='meal-item'><strong>Обед:</strong> Постные голубцы, отварной нут.</div><div class='meal-item'><strong>Ужин:</strong> Машевая каша, томатный сок, фисташки.</div>" },
+                { id: "Суббота", cal: 1869, burned: 650, weight: null, pro: 94, fat: 75, carb: 220, meals: "<div class='meal-item'><strong>Завтрак:</strong> Гречневая каша, консервированный лосось с томатами, фисташки, черный шоколад 56% (3 куб.), кофе.</div><div class='meal-item'><strong>Обед:</strong> Картошка фри Макдональдс (средняя), грецкие орехи, протеиновый коктейль Herbalife (после тренировки).</div><div class='meal-item'><strong>Ужин:</strong> Булгур с морковью, салат (пекинская капуста, помидоры, кукуруза).</div><div class='meal-item'><strong>Перекус:</strong> Очищенные креветки, безалкогольное пиво.</div>" },
+                { id: "Воскресенье", cal: 1110, burned: 350, weight: null, pro: 55, fat: 45, carb: 120, meals: "<div class='meal-item'><strong>Завтрак:</strong> Квашеная капуста, машевая каша, салат 'Морковь по-корейски', фасоль в томате, соленая красная рыба, чай, шоколад 56% (3 куб.).</div><div class='meal-item'><strong>Обед:</strong> Борщ.</div><div class='meal-item'><strong>Ужин:</strong> Маки-роллы с лососем и тунцом, яблочный сок, семечки.</div>" }
             ]
         },
         {
